@@ -3,6 +3,7 @@ package core
 import (
 	"math"
 	"math/rand"
+	"sort"
 	"time"
 )
 
@@ -54,24 +55,42 @@ func (p *Population) HasConverged() bool {
 
 // Evolve the population
 func (p *Population) Evolve() {
-	// select
-	i1 := p.getClosestToFitness(math.MaxInt32)                 // strongest
-	i2 := p.getClosestToFitness(p.individuals[i1].fitness - 1) // second strongest
-	i3 := p.getClosestToFitness(-1)                            // weakest
+	// select fittest
+	sortedIndividuals := p.individuals[:]
+	sort.Slice(sortedIndividuals, func(i, j int) bool {
+		return sortedIndividuals[i].fitness > sortedIndividuals[j].fitness
+	})
+
+	i1 := sortedIndividuals[0]
+	i2 := sortedIndividuals[1]
 
 	// combine
-	offspring := p.combine(p.individuals[i1], p.individuals[i2])
+	offspring := p.combine(i1, i2)
 
 	// mutate
 	if p.r.Int31n(10) < 3 {
 		p.mutate(offspring)
 	}
 
-	p.individuals[i3] = offspring
+	// replace weakest
+	weakestIx := p.getIndexOfWeakest()
+	p.individuals[weakestIx] = offspring
+
+	// increment the generation
+	p.Generation++
 }
 
-func (p *Population) getClosestToFitness(f int) int {
-	return -1
+func (p *Population) getIndexOfWeakest() int {
+	x := math.MaxInt32
+	ix := -1
+
+	for a, b := range p.individuals {
+		if b.fitness < x {
+			ix = a
+		}
+	}
+
+	return ix
 }
 
 func (p *Population) combine(i1, i2 *individual) *individual {

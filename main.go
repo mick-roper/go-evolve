@@ -8,6 +8,8 @@ import (
 func main() {
 	pop := core.NewPopulation(10)
 
+	pop.CalculateFitness()
+
 	for !pop.HasConverged() {
 		pop.Evolve()
 
