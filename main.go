@@ -1,8 +1,22 @@
 package main
 
-type population []individual
+import (
+	"local/wall-crawl/core"
+	"log"
+)
 
 func main() {
-	var pop population = make([]individual, 10)
+	pop := core.NewPopulation(10)
 
+	for !pop.HasConverged() {
+		pop.Evolve()
+
+		pop.CalculateFitness()
+
+		log.Printf("")
+	}
+
+	log.Println()
+	log.Println("Simulation complete!")
+	log.Printf("Fitness %v attained after %v generations\n", pop.Fitness, pop.Generation)
 }
