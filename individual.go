@@ -5,18 +5,22 @@ import (
 	"time"
 )
 
+type gene int
+
+type chromosome []gene
+
 type individual struct {
-	genes []int
+	chromosome chromosome
 }
 
 func newIndividual(genes int) *individual {
 	src := rand.NewSource(time.Now().UnixNano())
 	r := rand.New(src)
 
-	g := make([]int, genes)
+	var g chromosome = make([]gene, genes)
 
 	for i := range g {
-		g[i] = r.Int()
+		g[i] = gene(r.Int())
 	}
 
 	return &individual{g}
