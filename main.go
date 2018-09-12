@@ -1,12 +1,20 @@
 package main
 
 import (
+	"flag"
 	"local/wall-crawl/core"
 	"log"
 )
 
 func main() {
-	pop := core.NewPopulation(20, 10)
+	popSize := flag.Int("popsize", 10, "The size of the population")
+	genes := flag.Int("genes", 10, "The number of genes in each chromosome")
+
+	flag.Parse()
+
+	log.Printf("Creating population of %v individuals with %v genes in each chromosome\n", *popSize, *genes)
+
+	pop := core.NewPopulation(*popSize, *genes)
 
 	pop.CalculateFitness()
 
