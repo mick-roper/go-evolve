@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	pop := core.NewPopulation(10)
+	pop := core.NewPopulation(20, 10)
 
 	pop.CalculateFitness()
 
@@ -20,5 +20,5 @@ func main() {
 
 	log.Println()
 	log.Println("Simulation complete!")
-	log.Printf("Fitness %v attained after %v generations\n", pop.Fitness, pop.Generation)
+	log.Printf("Population converged after %v generations\n", pop.Generation)
 }

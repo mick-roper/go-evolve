@@ -17,11 +17,10 @@ type Population struct {
 }
 
 // NewPopulation creates a new population
-func NewPopulation(size int) *Population {
+func NewPopulation(size, genes int) *Population {
 	src := rand.NewSource(time.Now().UnixNano())
 	r := rand.New(src)
 	i := make([]*individual, size)
-	genes := 5
 
 	for x := range i {
 		i[x] = newIndividual(genes, r)
