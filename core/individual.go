@@ -8,6 +8,8 @@ type chromosome []int
 
 type individual struct {
 	chromosome chromosome
+	genes      int
+	fitness    int
 }
 
 func newIndividual(genes int, r *rand.Rand) *individual {
@@ -17,17 +19,15 @@ func newIndividual(genes int, r *rand.Rand) *individual {
 		g[i] = r.Int() % 2
 	}
 
-	return &individual{g}
+	return &individual{g, genes, 0}
 }
 
-func (i *individual) CalculateFitness() int {
-	f := 0
+func (i *individual) calculateFitness() {
+	i.fitness = 0
 
 	for n := range i.chromosome {
 		if i.chromosome[n] == 1 {
-			f++
+			i.fitness++
 		}
 	}
-
-	return f
 }
