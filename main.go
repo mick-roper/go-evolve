@@ -13,7 +13,7 @@ func main() {
 
 		pop.CalculateFitness()
 
-		log.Printf("")
+		log.Printf("Generation %v - Fitness %v\n", pop.Generation, pop.Fitness)
 	}
 
 	log.Println()
