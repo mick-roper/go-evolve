@@ -16,6 +16,7 @@ func main() {
 	log.Printf("Creating population of %v individuals with %v genes in each chromosome\n", *popSize, *genes)
 
 	pop := core.NewPopulation(*popSize, *genes)
+	defer pop.Close()
 
 	pop.CalculateFitness()
 

@@ -4,6 +4,7 @@ import (
 	"math"
 	"math/rand"
 	"sort"
+	"sync"
 	"time"
 )
 
@@ -14,6 +15,8 @@ type Population struct {
 	previousFitness int
 	Fitness         int
 	Generation      int
+	fitnessChan     chan int
+	fitnessWg       sync.WaitGroup
 }
 
 // NewPopulation creates a new population
@@ -26,13 +29,23 @@ func NewPopulation(size, genes int) *Population {
 		i[x] = newIndividual(genes, r)
 	}
 
-	return &Population{
+	p := &Population{
 		r:               r,
 		individuals:     i,
 		previousFitness: -1,
 		Fitness:         -1,
 		Generation:      0,
+		fitnessChan:     make(chan int, 1),
 	}
+
+	go func() {
+		for i := range p.fitnessChan {
+			p.Fitness += i
+			p.fitnessWg.Done()
+		}
+	}()
+
+	return p
 }
 
 // CalculateFitness of the population
@@ -40,11 +53,15 @@ func (p *Population) CalculateFitness() {
 	p.previousFitness = p.Fitness
 	p.Fitness = 0
 
-	for i := range p.individuals {
-		in := p.individuals[i]
-		in.calculateFitness()
-		p.Fitness += in.fitness
+	for _, i := range p.individuals {
+		go func(i *individual) {
+			p.fitnessWg.Add(1)
+			i.calculateFitness()
+			p.fitnessChan <- i.fitness
+		}(i)
 	}
+
+	p.fitnessWg.Wait()
 }
 
 // HasConverged checks if the population has converged
@@ -130,4 +147,9 @@ func (p *Population) mutate(i *individual) {
 			i.chromosome[n] = 1
 		}
 	}
+}
+
+// Close the assets reserved by the population
+func (p *Population) Close() {
+	close(p.fitnessChan)
 }

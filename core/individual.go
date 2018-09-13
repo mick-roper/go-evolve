@@ -25,9 +25,7 @@ func newIndividual(genes int, r *rand.Rand) *individual {
 func (i *individual) calculateFitness() {
 	i.fitness = 0
 
-	for n := range i.chromosome {
-		if i.chromosome[n] == 1 {
-			i.fitness++
-		}
+	for _, n := range i.chromosome {
+		i.fitness += n
 	}
 }
