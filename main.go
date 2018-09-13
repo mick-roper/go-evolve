@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
-	"local/wall-crawl/core"
 	"log"
+
+	"github.com/mick-roper/go-evolve/core"
 )
 
 func main() {
